@@ -1,0 +1,27 @@
+import sqlite3 as db
+conn = db.connect("quiz.db")
+
+def loadQuestions(conn):
+    cur = conn.cursor()
+    filename=input("enter filename")
+    fp=None
+    try:
+        fp=open(filename,"r")
+        #qry="alter table question auto_increment=1"
+        #cur.execute(qry)
+        qry="""insert into questions(ques,a,b,c,d,correct,hint,explanation)values"""
+        c=0
+        for i in fp.readlines():
+            if c==0:
+                pass
+            else:
+                qry+="""('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}'),""".format(*i.split(",")[1:])
+            c+=1
+        qry=  qry.rstrip(',')
+        cur.execute(qry)
+        print("Questions loaded successfully...")
+        conn.commit()
+    except Exception as e:
+        print(e)
+
+loadQuestions(conn)
